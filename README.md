@@ -23,3 +23,10 @@ Also I used `Redux` for manage global states when needed.
 
 # Demos
 
+![Signup Demo](https://github.com/mohammad6vakili/Next_Auth/blob/main/Demos/signup.png)
+
+![Login Demo](https://github.com/mohammad6vakili/Next_Auth/blob/main/Demos/Login.png)
+
+![Form Validations Demo](https://github.com/mohammad6vakili/Next_Auth/blob/main/Demos/Validations.png)
+
+![Dashboard Demo](https://github.com/mohammad6vakili/Next_Auth/blob/main/Demos/dashboard.png)
