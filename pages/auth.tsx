@@ -177,37 +177,45 @@ const Auth: NextPage = () => {
     });
     // check user exist
     if (!prevent) {
-      users.map((user: any) => {
-        // user exist
-        if (
-          user.email === loginData.email &&
-          user.password === loginData.password
-        ) {
-          isExist = true;
-          console.log("1");
-        } else if (
-          user.email === loginData.email &&
-          user.password !== loginData.password
-        ) {
-          // incorrect password
-          isExist = false;
-          setToast({
-            type: "error",
-            visible: true,
-            message: "Incorrect Password",
-          });
-          console.log("2");
-        } else if (user.email !== loginData.email && !isExist) {
-          // user not found
-          isExist = false;
-          setToast({
-            type: "error",
-            visible: true,
-            message: "User Not Found",
-          });
-          console.log("3");
-        }
-      });
+      if (users.length === 0) {
+        setToast({
+          type: "error",
+          visible: true,
+          message: "User Not Found",
+        });
+      } else {
+        users.map((user: any) => {
+          // user exist
+          if (
+            user.email === loginData.email &&
+            user.password === loginData.password
+          ) {
+            isExist = true;
+            console.log("1");
+          } else if (
+            user.email === loginData.email &&
+            user.password !== loginData.password
+          ) {
+            // incorrect password
+            isExist = false;
+            setToast({
+              type: "error",
+              visible: true,
+              message: "Incorrect Password",
+            });
+            console.log("2");
+          } else if (user.email !== loginData.email && !isExist) {
+            // user not found
+            isExist = false;
+            setToast({
+              type: "error",
+              visible: true,
+              message: "User Not Found",
+            });
+            console.log("3");
+          }
+        });
+      }
     }
     if (!prevent && isExist) {
       setToast({
