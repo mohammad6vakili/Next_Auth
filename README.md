@@ -2,6 +2,8 @@
 
 This is a `Next.js` project based on `Typescript`.
 
+Check Live Demo [Here](https://631091d4b518565d01a53a95--comfy-meringue-12258d.netlify.app/)
+
 # Installation
 
 Please clone the repository and run `npm i` in terminal in the root directory.
