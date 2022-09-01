@@ -1,5 +1,7 @@
 // React imports----------------------------
 import { useState, useEffect } from "react";
+
+// Third Libraries imports------------------
 import styled from "styled-components";
 
 // Next imports-----------------------------
@@ -10,6 +12,7 @@ import { useRouter } from "next/router";
 import type { RootState } from "../Store";
 import { useSelector, useDispatch } from "react-redux";
 import { setUsers } from "../Features/Users";
+import { setLoading } from "../Features/App";
 
 // Mui imports------------------------------
 import Snackbar from "@mui/material/Snackbar";
@@ -29,7 +32,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // styles import----------------------------
-import styles from "../styles/Login.module.css";
+import styles from "../styles/Auth.module.css";
+
+// components imports
+import AppLoading from "../Components/AppLoading/AppLoading";
 
 // utils import-----------------------------
 import { Colors } from "../utils/Colors";
@@ -41,6 +47,9 @@ import {
   SignupValidListTypes,
 } from "../utils/Types";
 
+// hooks imports----------------------------
+import useLocalStorage from "../Hooks/useLocalstorage";
+
 // custom components------------------------
 const Container = styled.div`
   width: 100%;
@@ -50,6 +59,7 @@ const Container = styled.div`
   align-items: center;
   background-color: ${Colors.BgPrimary};
 `;
+
 const LoginBox = styled.div`
   width: 35%;
   max-width: 550px;
@@ -70,9 +80,13 @@ const Auth: NextPage = () => {
   // ---------------------------------------------------- states -----------------------------------------------------
   // global states----------------------------
   const users = useSelector((state: RootState) => state.user.users);
+  const loading = useSelector((state: RootState) => state.app.loading);
+
+  const [inUsers, setInUsers] = useLocalStorage("users", users);
 
   // controller states------------------------
   const [toast, setToast] = useState<ToastTypes>({
+    type: "",
     visible: false,
     message: "",
   });
@@ -152,33 +166,95 @@ const Auth: NextPage = () => {
   // forms submit handler---------------------
   const HandleLogin = () => {
     let prevent: Boolean = false;
+    let isExist: Boolean = false;
     validator();
+    // check fileds validation
     Object.values(loginValidList).map((logData) => {
       if (logData) {
         prevent = true;
+        console.log("0");
       }
     });
+    // check user exist
     if (!prevent) {
-      router.push("/dashboard");
+      users.map((user: any) => {
+        // user exist
+        if (
+          user.email === loginData.email &&
+          user.password === loginData.password
+        ) {
+          isExist = true;
+          console.log("1");
+        } else if (
+          user.email === loginData.email &&
+          user.password !== loginData.password
+        ) {
+          // incorrect password
+          isExist = false;
+          setToast({
+            type: "error",
+            visible: true,
+            message: "Incorrect Password",
+          });
+          console.log("2");
+        } else if (user.email !== loginData.email && !isExist) {
+          // user not found
+          isExist = false;
+          setToast({
+            type: "error",
+            visible: true,
+            message: "User Not Found",
+          });
+          console.log("3");
+        }
+      });
+    }
+    if (!prevent && isExist) {
+      setToast({
+        type: "success",
+        visible: true,
+        message: "You have successfully logged in!",
+      });
+      console.log("4");
+      dispatch(setLoading(true));
+      localStorage.setItem("user", JSON.stringify(loginData));
+      setTimeout(() => {
+        router.push("/dashboard");
+        dispatch(setLoading(false));
+      }, 3000);
     }
   };
 
   const HandleSignup = () => {
     let prevent: Boolean = false;
+    let isExist: Boolean = false;
     validator();
+    // check fileds validati
     Object.values(signupValidList).map((signData) => {
       if (signData) {
         prevent = true;
       }
     });
+    // check user exist
     if (!prevent) {
+      users.map((user: any) => {
+        if (user.email === signupData.email) {
+          setToast({
+            type: "error",
+            visible: true,
+            message: "This email was registered by someone else",
+          });
+          isExist = true;
+        }
+      });
+    }
+    if (!prevent && !isExist) {
       let newUsers = [...users];
       newUsers.push(signupData);
-      console.log(newUsers);
       dispatch(setUsers(newUsers));
-      // setAuthTab(0);
+      setAuthTab(0);
       setToast({
-        ...toast,
+        type: "success",
         visible: true,
         message: "Your information has been successfully registered.",
       });
@@ -186,6 +262,16 @@ const Auth: NextPage = () => {
   };
 
   // effects ---------------------------------
+  useEffect(() => {
+    if (inUsers.length > 0) {
+      dispatch(setUsers(inUsers));
+    }
+    // check user LoggedIn
+    if (!localStorage.getItem("user")) {
+      router.push("/auth");
+    }
+  }, []);
+
   useEffect(() => {
     if (!errorStyles) {
       setErrorStyles(true);
@@ -222,17 +308,25 @@ const Auth: NextPage = () => {
     }
   }, [authTab]);
 
+  useEffect(() => {
+    if (users.length > 0) {
+      setInUsers(users);
+    }
+  }, [users]);
+
   return (
     <Container>
+      {loading && <AppLoading />}
       {/* ----- Toast Container ----- */}
       <Snackbar
         open={toast.visible}
+        style={{ zIndex: "9999" }}
         autoHideDuration={7000}
         onClose={() => setToast({ ...toast, visible: false })}
       >
         <Alert
           onClose={() => setToast({ ...toast, visible: false })}
-          severity="success"
+          severity={toast.type}
           sx={{ width: "100%" }}
         >
           {toast.message}
@@ -265,8 +359,6 @@ const Auth: NextPage = () => {
             Signup
           </Button>
         </Box>
-
-        <Button onClick={() => console.log(users)}>click</Button>
 
         {authTab === 0 ? (
           <Box className={styles.auth_form_wrapper}>
@@ -311,8 +403,7 @@ const Auth: NextPage = () => {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onMouseDown={() => setShowPassword(true)}
-                      onMouseUp={() => setShowPassword(false)}
+                      onClick={() => setShowPassword(!showPassword)}
                       edge="end"
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -417,8 +508,7 @@ const Auth: NextPage = () => {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onMouseDown={() => setShowPassword(true)}
-                      onMouseUp={() => setShowPassword(false)}
+                      onClick={() => setShowPassword(!showPassword)}
                       edge="end"
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}

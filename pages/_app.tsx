@@ -1,5 +1,6 @@
 // react import
 import { useEffect } from "react";
+import styled from "styled-components";
 
 // next import
 import type { AppProps } from "next/app";
@@ -18,6 +19,7 @@ import { Colors } from "../utils/Colors";
 import { store } from "../Store";
 import { Provider } from "react-redux";
 
+// custom Mui theme
 const theme = createTheme({
   palette: {
     primary: {
@@ -35,17 +37,37 @@ const theme = createTheme({
   },
 });
 
+// custom components
+const Container = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${Colors.BgPrimary};
+`;
+
 function MyApp({ Component, pageProps }: AppProps) {
+  // hooks ---------------------------
   const router = useRouter();
 
+  // effects -------------------------
   useEffect(() => {
-    router.push("/auth");
+    // check user auth
+    if (localStorage.getItem("user") && localStorage.getItem("user") !== "{}") {
+      console.log(localStorage.getItem("user"));
+      router.push("/dashboard");
+    } else {
+      router.push("/auth");
+    }
   }, []);
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <Container>
+          <Component {...pageProps} />
+        </Container>
       </ThemeProvider>
     </Provider>
   );

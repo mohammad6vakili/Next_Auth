@@ -1,5 +1,3 @@
-// src/useLocalStorage.js, final code
-
 import { useState, useEffect } from "react";
 
 const useLocalStorage = (key: string, defaultValue: any) => {
