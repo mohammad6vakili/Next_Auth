@@ -1,4 +1,4 @@
 .logout_button{
-    margin-top: 20px;
-    min-width: 200px;
+    margin-top: 20px !important;
+    min-width: 200px !important;
 }
