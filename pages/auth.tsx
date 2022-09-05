@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 
 // Third Libraries imports------------------
 import styled from "styled-components";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 // Next imports-----------------------------
 import type { NextPage } from "next";
@@ -39,16 +41,7 @@ import AppLoading from "../Components/AppLoading/AppLoading";
 
 // utils import-----------------------------
 import { Colors } from "../utils/Colors";
-import {
-  ToastTypes,
-  LoginDataTypes,
-  SignupDataTypes,
-  LoginValidListTypes,
-  SignupValidListTypes,
-} from "../utils/Types";
-
-// hooks imports----------------------------
-import useLocalStorage from "../Hooks/useLocalstorage";
+import { ToastTypes } from "../utils/Types";
 
 // custom components------------------------
 const Container = styled.div`
@@ -82,8 +75,6 @@ const Auth: NextPage = () => {
   const users = useSelector((state: RootState) => state.user.users);
   const loading = useSelector((state: RootState) => state.app.loading);
 
-  const [inUsers, setInUsers] = useLocalStorage("users", users);
-
   // controller states------------------------
   const [toast, setToast] = useState<ToastTypes>({
     type: "",
@@ -92,235 +83,66 @@ const Auth: NextPage = () => {
   });
   const [authTab, setAuthTab] = useState<Number>(0);
   const [showPassword, setShowPassword]: any = useState(false);
-  const [errorStyles, setErrorStyles]: any = useState(true);
 
-  // form data states-------------------------
-  const [loginData, setLoginData] = useState<LoginDataTypes>({
-    email: "",
-    password: "",
-  });
-  const [signupData, setSignupData] = useState<SignupDataTypes>({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
+  // form validation schemas-------------------
+  const loginValidationSchema = yup.object({
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(8, "Password should be of minimum 8 characters length")
+      .required("Password is required"),
   });
 
-  // form validation states-------------------
-  const [loginValidList, setLoginValidList] = useState<LoginValidListTypes>({
-    email: false,
-    password: false,
+  const signupValidationSchema = yup.object({
+    first_name: yup.string().required("First name is required"),
+    last_name: yup.string().required("Last name is required"),
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(8, "Password should be of minimum 8 characters length")
+      .required("Password is required"),
   });
-  const [signupValidList, setSignupValidList] = useState<SignupValidListTypes>({
-    first_name: false,
-    last_name: false,
-    email: false,
-    password: false,
+
+  // form methods-------------------------
+  const loginFormController = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: loginValidationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
+
+  const signupFormController = useFormik({
+    initialValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: signupValidationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
   });
 
   // ---------------------------------------------------- methodes -----------------------------------------------------
-  // forms validator handler------------------
-  const validator = () => {
-    setErrorStyles(false);
-    const emailRegex = /\S+@\S+\.\S+/;
-    switch (authTab) {
-      case 0:
-        if (emailRegex.test(loginData.email) === false) {
-          loginValidList.email = true;
-        } else {
-          loginValidList.email = false;
-        }
-        if (loginData.password.length === 0) {
-          loginValidList.password = true;
-        } else {
-          loginValidList.password = false;
-        }
-        break;
-      case 1:
-        if (signupData.first_name.length === 0) {
-          signupValidList.first_name = true;
-        } else {
-          signupValidList.first_name = false;
-        }
-        if (signupData.last_name.length === 0) {
-          signupValidList.last_name = true;
-        } else {
-          signupValidList.last_name = false;
-        }
-        if (emailRegex.test(signupData.email) === false) {
-          signupValidList.email = true;
-        } else {
-          signupValidList.email = false;
-        }
-        if (signupData.password.length === 0) {
-          signupValidList.password = true;
-        } else {
-          signupValidList.password = false;
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
-  // forms submit handler---------------------
-  const HandleLogin = () => {
-    let prevent: Boolean = false;
-    let isExist: Boolean = false;
-    validator();
-    // check fileds validation
-    Object.values(loginValidList).map((logData) => {
-      if (logData) {
-        prevent = true;
-        console.log("0");
-      }
-    });
-    // check user exist
-    if (!prevent) {
-      if (users.length === 0) {
-        setToast({
-          type: "error",
-          visible: true,
-          message: "User Not Found",
-        });
-      } else {
-        users.map((user: any) => {
-          // user exist
-          if (
-            user.email === loginData.email &&
-            user.password === loginData.password
-          ) {
-            isExist = true;
-            console.log("1");
-          } else if (
-            user.email === loginData.email &&
-            user.password !== loginData.password
-          ) {
-            // incorrect password
-            isExist = false;
-            setToast({
-              type: "error",
-              visible: true,
-              message: "Incorrect Password",
-            });
-            console.log("2");
-          } else if (user.email !== loginData.email && !isExist) {
-            // user not found
-            isExist = false;
-            setToast({
-              type: "error",
-              visible: true,
-              message: "User Not Found",
-            });
-            console.log("3");
-          }
-        });
-      }
-    }
-    if (!prevent && isExist) {
-      setToast({
-        type: "success",
-        visible: true,
-        message: "You have successfully logged in!",
-      });
-      console.log("4");
-      dispatch(setLoading(true));
-      localStorage.setItem("user", JSON.stringify(loginData));
-      setTimeout(() => {
-        router.push("/dashboard");
-        dispatch(setLoading(false));
-      }, 3000);
-    }
-  };
-
-  const HandleSignup = () => {
-    let prevent: Boolean = false;
-    let isExist: Boolean = false;
-    validator();
-    // check fileds validati
-    Object.values(signupValidList).map((signData) => {
-      if (signData) {
-        prevent = true;
-      }
-    });
-    // check user exist
-    if (!prevent) {
-      users.map((user: any) => {
-        if (user.email === signupData.email) {
-          setToast({
-            type: "error",
-            visible: true,
-            message: "This email was registered by someone else",
-          });
-          isExist = true;
-        }
-      });
-    }
-    if (!prevent && !isExist) {
-      let newUsers = [...users];
-      newUsers.push(signupData);
-      dispatch(setUsers(newUsers));
-      setAuthTab(0);
-      setToast({
-        type: "success",
-        visible: true,
-        message: "Your information has been successfully registered.",
-      });
-    }
-  };
 
   // effects ---------------------------------
   useEffect(() => {
-    if (inUsers.length > 0) {
-      dispatch(setUsers(inUsers));
-    }
     // check user LoggedIn
     if (!localStorage.getItem("user")) {
       router.push("/auth");
     }
   }, []);
-
-  useEffect(() => {
-    if (!errorStyles) {
-      setErrorStyles(true);
-    }
-  }, [errorStyles]);
-
-  useEffect(() => {
-    switch (authTab) {
-      case 0:
-        setSignupData({
-          first_name: "",
-          last_name: "",
-          email: "",
-          password: "",
-        });
-        setSignupValidList({
-          first_name: false,
-          last_name: false,
-          email: false,
-          password: false,
-        });
-        break;
-      case 1:
-        setLoginData({
-          email: "",
-          password: "",
-        });
-        setLoginValidList({
-          email: false,
-          password: false,
-        });
-      default:
-        break;
-    }
-  }, [authTab]);
-
-  useEffect(() => {
-    if (users.length > 0) {
-      setInUsers(users);
-    }
-  }, [users]);
 
   return (
     <Container>
@@ -369,25 +191,27 @@ const Auth: NextPage = () => {
         </Box>
 
         {authTab === 0 ? (
-          <Box className={styles.auth_form_wrapper}>
+          <form
+            onSubmit={loginFormController.handleSubmit}
+            className={styles.auth_form_wrapper}
+          >
             {/* ----- Login Email ----- */}
             <TextField
               label="Email Address"
               variant="outlined"
               type={"email"}
-              inputProps={{
-                autoComplete: "new-password",
-                form: {
-                  autoComplete: "off",
-                },
-              }}
-              value={loginData.email}
-              onChange={(e) =>
-                setLoginData({ ...loginData, email: e.target.value })
+              id="email"
+              name="email"
+              autoComplete="new-password"
+              value={loginFormController.values.email}
+              onChange={loginFormController.handleChange}
+              error={
+                loginFormController.touched.email &&
+                Boolean(loginFormController.errors.email)
               }
-              error={errorStyles && loginValidList.email}
               helperText={
-                loginValidList.email ? "Please Enter Your Email Address" : ""
+                loginFormController.touched.email &&
+                loginFormController.errors.email
               }
             />
 
@@ -396,17 +220,15 @@ const Auth: NextPage = () => {
               <InputLabel>Password</InputLabel>
               <OutlinedInput
                 type={showPassword ? "text" : "password"}
-                value={loginData.password}
-                inputProps={{
-                  autoComplete: "new-password",
-                  form: {
-                    autoComplete: "off",
-                  },
-                }}
-                onChange={(e) =>
-                  setLoginData({ ...loginData, password: e.target.value })
+                id="password"
+                name="password"
+                autoComplete="new-password"
+                value={loginFormController.values.password}
+                onChange={loginFormController.handleChange}
+                error={
+                  loginFormController.touched.password &&
+                  Boolean(loginFormController.errors.password)
                 }
-                error={errorStyles && loginValidList.password}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -420,9 +242,9 @@ const Auth: NextPage = () => {
                 }
                 label="Password"
               />
-              {loginValidList.password && (
+              {loginFormController.touched.password && (
                 <FormHelperText error>
-                  Please Enter your password
+                  {loginFormController.errors.password}
                 </FormHelperText>
               )}
             </FormControl>
@@ -436,27 +258,33 @@ const Auth: NextPage = () => {
 
             {/* ----- Login Action Button ----- */}
             <Button
-              onClick={HandleLogin}
               className={styles.auth_form_submit}
               variant="contained"
+              type="submit"
             >
               Login
             </Button>
-          </Box>
+          </form>
         ) : (
-          <Box className={styles.auth_form_wrapper}>
+          <form
+            onSubmit={signupFormController.handleSubmit}
+            className={styles.auth_form_wrapper}
+          >
             {/* ----- Signup FirstName ----- */}
             <TextField
               label="First Name"
               variant="outlined"
               type={"text"}
-              value={signupData.first_name}
-              onChange={(e) =>
-                setSignupData({ ...signupData, first_name: e.target.value })
+              name="first_name"
+              value={signupFormController.values.first_name}
+              onChange={signupFormController.handleChange}
+              error={
+                signupFormController.touched.first_name &&
+                Boolean(signupFormController.errors.first_name)
               }
-              error={errorStyles && signupValidList.first_name}
               helperText={
-                signupValidList.first_name ? "Please Enter Your FirstName" : ""
+                signupFormController.touched.first_name &&
+                signupFormController.errors.first_name
               }
             />
 
@@ -465,13 +293,16 @@ const Auth: NextPage = () => {
               label="Last Name"
               variant="outlined"
               type={"text"}
-              value={signupData.last_name}
-              onChange={(e) =>
-                setSignupData({ ...signupData, last_name: e.target.value })
+              name="last_name"
+              value={signupFormController.values.last_name}
+              onChange={signupFormController.handleChange}
+              error={
+                signupFormController.touched.last_name &&
+                Boolean(signupFormController.errors.last_name)
               }
-              error={errorStyles && signupValidList.last_name}
               helperText={
-                signupValidList.last_name ? "Please Enter Your LastName" : ""
+                signupFormController.touched.last_name &&
+                signupFormController.errors.last_name
               }
             />
 
@@ -480,19 +311,17 @@ const Auth: NextPage = () => {
               label="Email Address"
               variant="outlined"
               type={"email"}
-              value={signupData.email}
-              inputProps={{
-                autoComplete: "new-password",
-                form: {
-                  autoComplete: "off",
-                },
-              }}
-              onChange={(e) =>
-                setSignupData({ ...signupData, email: e.target.value })
+              name="email"
+              value={signupFormController.values.email}
+              autoComplete="new-password"
+              onChange={signupFormController.handleChange}
+              error={
+                signupFormController.touched.email &&
+                Boolean(signupFormController.errors.email)
               }
-              error={errorStyles && signupValidList.email}
               helperText={
-                signupValidList.email ? "Please Enter Your Email Address" : ""
+                signupFormController.touched.email &&
+                signupFormController.errors.email
               }
             />
 
@@ -501,17 +330,14 @@ const Auth: NextPage = () => {
               <InputLabel>Password</InputLabel>
               <OutlinedInput
                 type={showPassword ? "text" : "password"}
-                value={signupData.password}
-                onChange={(e) =>
-                  setSignupData({ ...signupData, password: e.target.value })
+                name="password"
+                value={signupFormController.values.password}
+                autoComplete="new-password"
+                onChange={signupFormController.handleChange}
+                error={
+                  signupFormController.touched.password &&
+                  Boolean(signupFormController.errors.password)
                 }
-                inputProps={{
-                  autoComplete: "new-password",
-                  form: {
-                    autoComplete: "off",
-                  },
-                }}
-                error={errorStyles && signupValidList.password}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -525,22 +351,22 @@ const Auth: NextPage = () => {
                 }
                 label="Password"
               />
-              {signupValidList.password && (
+              {signupFormController.touched.password && (
                 <FormHelperText error>
-                  Please Enter your password
+                  {signupFormController.errors.password}
                 </FormHelperText>
               )}
             </FormControl>
 
             {/* ----- Signup Action Button ----- */}
             <Button
-              onClick={HandleSignup}
               className={styles.auth_form_submit}
               variant="contained"
+              type="submit"
             >
               Signup
             </Button>
-          </Box>
+          </form>
         )}
       </LoginBox>
     </Container>
