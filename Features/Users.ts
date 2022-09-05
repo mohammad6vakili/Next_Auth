@@ -3,10 +3,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserState {
   users: any;
+  user: any;
 }
 
 const initialState: UserState = {
   users: [],
+  user: {},
 };
 
 export const userSlice = createSlice({
@@ -16,9 +18,12 @@ export const userSlice = createSlice({
     setUsers: (state, action: PayloadAction<any>) => {
       state.users = action.payload;
     },
+    setUser: (state, action: PayloadAction<any>) => {
+      state.user = action.payload;
+    },
   },
 });
 
-export const { setUsers } = userSlice.actions;
+export const { setUsers, setUser } = userSlice.actions;
 
 export default userSlice.reducer;
