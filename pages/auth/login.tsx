@@ -40,6 +40,7 @@ import AuthFormTabs from "../../Components/AuthFormTabs/Index";
 const Login: NextPage = () => {
   // global states -------------------------------------
   const users = useSelector((state: RootState) => state.user.users);
+  const user = useSelector((state: RootState) => state.user.user);
 
   // hooks ---------------------------------------------
   // const { loginFormController }: any = useContext(UserAuthContext);

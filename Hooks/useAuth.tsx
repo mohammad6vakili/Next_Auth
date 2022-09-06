@@ -14,12 +14,13 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 export default function useAuth() {
-  // global states -------------------------------------
-  const users = useSelector((state: RootState) => state.user.users);
-
   // hooks ---------------------------------------------
   const router = useRouter();
   const dispatch = useDispatch();
+
+  // global states -------------------------------------
+  const users = useSelector((state: RootState) => state.user.users);
+  const user = useSelector((state: RootState) => state.user.user);
 
   // ---------------------------------------------------- Login ------------------------------------------------------
   const loginValidationSchema = yup.object({
@@ -109,11 +110,24 @@ export default function useAuth() {
 
   // ---------------------------------------------------- Logout ------------------------------------------------------
   const handleLogout = () => {
-    localStorage.removeItem("user");
     router.push("/auth/login");
+    dispatch(setUser(null));
+  };
+
+  // ------------------------------------------------------ User ------------------------------------------------------
+  const checkUserIsLogged = () => {
+    if (user) {
+      router.push("/panel");
+    } else {
+      router.push("/auth/login");
+    }
   };
 
   // --------------------------------------------------- Effects -----------------------------------------------------
+  useEffect(() => {
+    checkUserIsLogged();
+  }, []);
+
   useEffect(() => {
     loginFormController.resetForm();
     signupFormController.resetForm();
@@ -124,6 +138,7 @@ export default function useAuth() {
     loginFormController,
     signupFormController,
     handleLogout,
+    checkUserIsLogged,
   };
 
   return values;

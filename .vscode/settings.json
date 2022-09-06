@@ -3,6 +3,7 @@
     "validation library",
     "Transfer UserAuth Operations",
     "transfer operations",
-    "useAuth Hook"
+    "useAuth Hook",
+    "persist storage"
   ]
 }

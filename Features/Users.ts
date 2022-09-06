@@ -8,7 +8,7 @@ export interface UserState {
 
 const initialState: UserState = {
   users: [],
-  user: {},
+  user: null,
 };
 
 export const userSlice = createSlice({
