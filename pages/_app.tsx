@@ -6,8 +6,6 @@ import styled from "styled-components";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 
-import { UserAuthContextProvider } from "../Context/UserAuthContext";
-
 // styles import
 import "../styles/globals.css";
 
@@ -55,13 +53,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <UserAuthContextProvider>
-        <ThemeProvider theme={theme}>
-          <Container>
-            <Component {...pageProps} />
-          </Container>
-        </ThemeProvider>
-      </UserAuthContextProvider>
+      <ThemeProvider theme={theme}>
+        <Container>
+          <Component {...pageProps} />
+        </Container>
+      </ThemeProvider>
     </Provider>
   );
 }

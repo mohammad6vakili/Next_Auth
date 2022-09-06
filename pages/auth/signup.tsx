@@ -1,11 +1,11 @@
 // React imports----------------------------
-import { useState, useContext } from "react";
+import { useState } from "react";
 
 // Next imports-----------------------------
 import type { NextPage } from "next";
 
-// Context imports--------------------------
-import { UserAuthContext } from "../../Context/UserAuthContext";
+// Hooks imports----------------------------
+import useAuth from "../../Hooks/useAuth";
 
 // Mui imports------------------------------
 import Typography from "@mui/material/Typography";
@@ -33,7 +33,7 @@ import AuthFormTabs from "../../Components/AuthFormTabs/Index";
 
 const Signup: NextPage = () => {
   // hooks ---------------------------------------
-  const { signupFormController }: any = useContext(UserAuthContext);
+  const { signupFormController }: any = useAuth();
 
   // states ---------------------------------------
   const [showPassword, setShowPassword]: any = useState(false);

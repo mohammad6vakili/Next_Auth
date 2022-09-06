@@ -1,5 +1,5 @@
 // React imports ----------------------------
-import React, { useEffect, createContext } from "react";
+import { useEffect } from "react";
 
 // Next imports -----------------------------
 import { useRouter } from "next/router";
@@ -13,17 +13,7 @@ import { setUser, setUsers } from "../Features/Users";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-// Types ------------------------------------
-type UserAuthContextProviderProps = {
-  children: React.ReactNode;
-};
-
-// create context ---------------------------
-export const UserAuthContext = createContext(null);
-
-export const UserAuthContextProvider = ({
-  children,
-}: UserAuthContextProviderProps) => {
+export default function useAuth() {
   // global states -------------------------------------
   const users = useSelector((state: RootState) => state.user.users);
 
@@ -51,6 +41,10 @@ export const UserAuthContextProvider = ({
     validationSchema: loginValidationSchema,
     onSubmit: (values) => {
       let canLogin: Boolean = true;
+      if (users.length === 0) {
+        canLogin = false;
+        alert("User Not Found!");
+      }
       users.map((user: any) => {
         if (user.email !== values.email) {
           alert("User Not Found!");
@@ -108,11 +102,12 @@ export const UserAuthContextProvider = ({
         newUsers.push(values);
         dispatch(setUsers(newUsers));
         alert("success");
+        router.push("/auth/login");
       }
     },
   });
 
-  // ---------------------------------------------------- Users ------------------------------------------------------
+  // ---------------------------------------------------- Logout ------------------------------------------------------
   const handleLogout = () => {
     localStorage.removeItem("user");
     router.push("/auth/login");
@@ -125,15 +120,11 @@ export const UserAuthContextProvider = ({
   }, [router.pathname]);
 
   // exports ---------------------------------------------
-  const value: any = {
+  const values: any = {
     loginFormController,
     signupFormController,
     handleLogout,
   };
 
-  return (
-    <UserAuthContext.Provider value={value}>
-      {children}
-    </UserAuthContext.Provider>
-  );
-};
+  return values;
+}

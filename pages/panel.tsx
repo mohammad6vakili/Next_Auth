@@ -1,11 +1,8 @@
-// React imports ----------------------------
-import { useContext } from "react";
-
 // styles imports ---------------------------
 import styles from "../styles/Dashboard.module.css";
 
-// Context imports --------------------------
-import { UserAuthContext } from "../Context/UserAuthContext";
+// Hooks imports --------------------------
+import useAuth from "../Hooks/useAuth";
 
 // Next imports -----------------------------
 import { NextPage } from "next";
@@ -23,7 +20,7 @@ import { Container } from "../Components/Container/Container";
 
 const Dashboard: NextPage = () => {
   // hooks ---------------------------------------------
-  const { handleLogout }: any = useContext(UserAuthContext);
+  const { handleLogout }: any = useAuth();
 
   // global states -------------------------------------
   const user = useSelector((state: RootState) => state.user.user);

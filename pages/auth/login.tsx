@@ -7,8 +7,8 @@ import styles from "../../styles/Auth.module.css";
 // Next imports-----------------------------
 import type { NextPage } from "next";
 
-// Context imports--------------------------
-import { UserAuthContext } from "../../Context/UserAuthContext";
+// Hooks imports--------------------------
+import useAuth from "../../Hooks/useAuth";
 
 // Redux imports----------------------------
 import { useSelector } from "react-redux";
@@ -42,7 +42,8 @@ const Login: NextPage = () => {
   const users = useSelector((state: RootState) => state.user.users);
 
   // hooks ---------------------------------------------
-  const { loginFormController }: any = useContext(UserAuthContext);
+  // const { loginFormController }: any = useContext(UserAuthContext);
+  const { loginFormController }: any = useAuth();
 
   // states --------------------------------------------
   const [showPassword, setShowPassword]: any = useState(false);
@@ -63,10 +64,6 @@ const Login: NextPage = () => {
 
         {/* ----- Form Tabs ----- */}
         <AuthFormTabs />
-
-        <Button variant="contained" onClick={() => console.log(users)}>
-          click
-        </Button>
 
         <form
           onSubmit={loginFormController.handleSubmit}
