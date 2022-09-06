@@ -5,17 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 // next import
 import type { AppProps } from "next/app";
 
-// styles import
-import "../styles/globals.css";
-
 // Mui import
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // utils import
-import { Colors } from "../utils/Colors";
+import { Colors } from "../utils/colors";
 
 // redux imports
-import { store } from "../App/Store";
+import { store } from "../app/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
@@ -41,7 +38,8 @@ const theme = createTheme({
 });
 
 // component imports
-import { Container } from "../Components/Container/Index";
+import { Container } from "../components/container";
+import Loading from "../components/loading";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -58,6 +56,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             pauseOnHover
           />
           <Container>
+            <Loading />
             <Component {...pageProps} />
           </Container>
         </PersistGate>

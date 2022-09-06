@@ -2,8 +2,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-export interface AppStates {
-  loading: Boolean;
+interface AppStates {
+  loading: any;
 }
 
 const initialState: AppStates = {
@@ -14,7 +14,7 @@ export const AppSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<Boolean>) => {
+    setLoading: (state, action: PayloadAction<any>) => {
       state.loading = action.payload;
     },
   },

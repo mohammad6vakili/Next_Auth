@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 // Next imports
 import { NextPage } from "next";
 import Image from "next/image";
@@ -5,11 +7,14 @@ import Image from "next/image";
 // Third Libraries imports
 import styled from "styled-components";
 
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+
 // assets import
-import LoadingSvg from "../../Assets/Loading.svg";
+import LoadingSvg from "../../Assets/loading.svg";
 
 // utils import
-import { Colors } from "../../utils/Colors";
+import { Colors } from "../../utils/colors";
 
 // custom components
 const Container = styled.div`
@@ -25,11 +30,19 @@ const Container = styled.div`
   transition: opacity 0.5s;
 `;
 
-const AppLoading: NextPage = () => {
+const Loading: NextPage = () => {
+  const loading = useSelector((state: RootState) => state.app.loading);
+
+  useEffect(() => {
+    console.log(loading);
+  }, [loading]);
+
   return (
-    <Container>
-      <Image src={LoadingSvg} />
-    </Container>
+    loading && (
+      <Container>
+        <Image src={LoadingSvg} />
+      </Container>
+    )
   );
 };
-export default AppLoading;
+export default Loading;

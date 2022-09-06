@@ -1,13 +1,14 @@
 // React imports ----------------------------
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Next imports -----------------------------
 import { useRouter } from "next/router";
 
 // Redux imports ----------------------------
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../App/Store";
-import { setUser, setUsers } from "../Features/Users";
+import { RootState } from "../app/store";
+import { setUser, setUsers } from "../features/users";
+import { setLoading } from "../features/app";
 
 // Third Party Libraries imports ------------
 import { useFormik } from "formik";
@@ -43,27 +44,40 @@ export default function useAuth() {
     validationSchema: loginValidationSchema,
     onSubmit: (values) => {
       let errorMessage: string = "";
-      let canLogin: Boolean = true;
+      let isExist: Boolean = false;
       if (users.length === 0) {
-        canLogin = false;
-        errorMessage = "User Not Found!";
+        // there's no user
+        errorMessage = "There's no user yet";
+      } else {
+        users.map((user: any) => {
+          // user exist
+          if (
+            user.email === values.email &&
+            user.password === values.password
+          ) {
+            isExist = true;
+          } else if (
+            user.email === values.email &&
+            user.password !== values.password
+          ) {
+            // incorrect password
+            isExist = false;
+            errorMessage = "Incorrect Password";
+          } else if (user.email !== values.email && !isExist) {
+            // user not found
+            isExist = false;
+            errorMessage = "User Not Found";
+          }
+        });
       }
-      users.map((user: any) => {
-        if (user.email !== values.email) {
-          errorMessage = "User Not Found!";
-          canLogin = false;
-        } else if (
-          user.email === values.email &&
-          user.password !== values.password
-        ) {
-          errorMessage = "Incorrect Password";
-          canLogin = false;
-        }
-      });
-      if (canLogin) {
-        dispatch(setUser(values));
-        toast.success("Login Successfully");
-        router.push("/panel");
+      if (isExist) {
+        dispatch(setLoading(true));
+        setTimeout(() => {
+          dispatch(setLoading(false));
+          dispatch(setUser(values));
+          toast.success("Login Successfully");
+          router.push("/panel");
+        }, 3000);
       } else {
         toast.error(errorMessage);
       }
@@ -100,15 +114,19 @@ export default function useAuth() {
         users.map((user: any) => {
           if (user.email === values.email) {
             alreadyExist = true;
-            message = "Already Exist!";
+            message = "Someone has already registered with this email.";
           }
         });
       }
       if (!alreadyExist) {
-        newUsers.push(values);
-        dispatch(setUsers(newUsers));
-        toast.success("Your information has been successfully registered.");
-        router.push("/auth/login");
+        dispatch(setLoading(true));
+        setTimeout(() => {
+          dispatch(setLoading(false));
+          newUsers.push(values);
+          dispatch(setUsers(newUsers));
+          toast.success("Your information has been successfully registered.");
+          router.push("/auth/login");
+        }, 3000);
       } else {
         toast.error(message);
       }
@@ -118,12 +136,13 @@ export default function useAuth() {
   // ---------------------------------------------------- Logout ------------------------------------------------------
   const handleLogout = () => {
     router.push("/auth/login");
-    toast.error("You have successfully logged out.");
+    toast.error("You are logged out");
     dispatch(setUser(null));
   };
 
   // ------------------------------------------------------ User ------------------------------------------------------
   const checkUserIsLogged = () => {
+    dispatch(setLoading(false));
     if (user) {
       router.push("/panel");
     } else {

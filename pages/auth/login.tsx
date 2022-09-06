@@ -8,7 +8,7 @@ import styles from "../../styles/Auth.module.css";
 import type { NextPage } from "next";
 
 // Hooks imports--------------------------
-import useAuth from "../../Hooks/useAuth";
+import useAuth from "../../hooks/use_auth";
 
 // Mui imports------------------------------
 import Typography from "@mui/material/Typography";
@@ -26,14 +26,17 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // utils import-----------------------------
-import { Colors } from "../../utils/Colors";
+import { Colors } from "../../utils/colors";
 
 // component imports------------------------
-import { Container } from "../../Components/Container/Index";
-import { AuthBox } from "../../Components/AuthBox/Index";
-import AuthFormTabs from "../../Components/AuthFormTabs/Index";
+import { Container } from "../../components/container";
+import { AuthBox } from "../../components/auth_box";
+import AuthFormTabs from "../../components/auth_form_tabs";
+import { useSelector } from "react-redux";
 
 const Login: NextPage = () => {
+  const loading = useSelector((state: RootState) => state.app.loading);
+
   // hooks ---------------------------------------------
   const { loginFormController }: any = useAuth();
 
@@ -55,7 +58,6 @@ const Login: NextPage = () => {
 
         {/* ----- Form Tabs ----- */}
         <AuthFormTabs />
-
         <form
           onSubmit={loginFormController.handleSubmit}
           className={styles.auth_form_wrapper}
