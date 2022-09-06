@@ -1,5 +1,7 @@
 {
     "conventionalCommits.scopes": [
-        "validation library"
+        "validation library",
+        "Transfer UserAuth Operations",
+        "transfer operations"
     ]
 }

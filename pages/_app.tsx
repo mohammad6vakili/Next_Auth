@@ -6,6 +6,8 @@ import styled from "styled-components";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 
+import { UserAuthContextProvider } from "../Context/UserAuthContext";
+
 // styles import
 import "../styles/globals.css";
 
@@ -16,7 +18,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Colors } from "../utils/Colors";
 
 // redux imports
-import { store } from "../Store";
+import { store } from "../App/Store";
 import { Provider } from "react-redux";
 
 // custom Mui theme
@@ -48,27 +50,18 @@ const Container = styled.div`
 `;
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // hooks ---------------------------
+  // hooks ---------------------------------------
   const router = useRouter();
-
-  // effects -------------------------
-  useEffect(() => {
-    // check user auth
-    if (localStorage.getItem("user") && localStorage.getItem("user") !== "{}") {
-      console.log(localStorage.getItem("user"));
-      router.push("/dashboard");
-    } else {
-      router.push("/auth");
-    }
-  }, []);
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <Container>
-          <Component {...pageProps} />
-        </Container>
-      </ThemeProvider>
+      <UserAuthContextProvider>
+        <ThemeProvider theme={theme}>
+          <Container>
+            <Component {...pageProps} />
+          </Container>
+        </ThemeProvider>
+      </UserAuthContextProvider>
     </Provider>
   );
 }
