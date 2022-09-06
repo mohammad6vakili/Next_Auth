@@ -6,6 +6,7 @@
     "useAuth Hook",
     "persist storage",
     "toast",
-    "file structure"
+    "file structure",
+    "add e2e test"
   ]
 }

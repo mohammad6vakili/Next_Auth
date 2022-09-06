@@ -64,6 +64,7 @@ const Signup: NextPage = () => {
             variant="outlined"
             type={"text"}
             name="first_name"
+            id="signup-first-name"
             value={signupFormController.values.first_name}
             onChange={signupFormController.handleChange}
             error={
@@ -82,6 +83,7 @@ const Signup: NextPage = () => {
             variant="outlined"
             type={"text"}
             name="last_name"
+            id="signup-last-name"
             value={signupFormController.values.last_name}
             onChange={signupFormController.handleChange}
             error={
@@ -100,6 +102,7 @@ const Signup: NextPage = () => {
             variant="outlined"
             type={"email"}
             name="email"
+            id="signup-email"
             value={signupFormController.values.email}
             autoComplete="new-password"
             onChange={signupFormController.handleChange}
@@ -119,6 +122,7 @@ const Signup: NextPage = () => {
             <OutlinedInput
               type={showPassword ? "text" : "password"}
               name="password"
+              id="signup-password"
               value={signupFormController.values.password}
               autoComplete="new-password"
               onChange={signupFormController.handleChange}
@@ -151,6 +155,7 @@ const Signup: NextPage = () => {
             className={styles.auth_form_submit}
             variant="contained"
             type="submit"
+            id="signup-submit"
           >
             Signup
           </Button>

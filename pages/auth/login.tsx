@@ -35,8 +35,6 @@ import AuthFormTabs from "../../components/auth_form_tabs";
 import { useSelector } from "react-redux";
 
 const Login: NextPage = () => {
-  const loading = useSelector((state: RootState) => state.app.loading);
-
   // hooks ---------------------------------------------
   const { loginFormController }: any = useAuth();
 
@@ -67,7 +65,7 @@ const Login: NextPage = () => {
             label="Email Address"
             variant="outlined"
             type={"email"}
-            id="email"
+            id="login-email"
             name="email"
             autoComplete="new-password"
             value={loginFormController.values.email}
@@ -87,7 +85,7 @@ const Login: NextPage = () => {
             <InputLabel>Password</InputLabel>
             <OutlinedInput
               type={showPassword ? "text" : "password"}
-              id="password"
+              id="login-password"
               name="password"
               autoComplete="new-password"
               value={loginFormController.values.password}
@@ -128,6 +126,7 @@ const Login: NextPage = () => {
             className={styles.auth_form_submit}
             variant="contained"
             type="submit"
+            id="login-submit"
           >
             Login
           </Button>

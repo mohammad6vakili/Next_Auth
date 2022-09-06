@@ -47,7 +47,7 @@ export default function useAuth() {
       let isExist: Boolean = false;
       if (users.length === 0) {
         // there's no user
-        errorMessage = "There's no user yet";
+        errorMessage = "User Not Found";
       } else {
         users.map((user: any) => {
           // user exist
@@ -125,7 +125,6 @@ export default function useAuth() {
           newUsers.push(values);
           dispatch(setUsers(newUsers));
           toast.success("Your information has been successfully registered.");
-          router.push("/auth/login");
         }, 3000);
       } else {
         toast.error(message);

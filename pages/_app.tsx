@@ -49,6 +49,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <ToastContainer
             position="bottom-left"
             autoClose={5000}
+            containerId="toast"
             newestOnTop={false}
             closeOnClick
             pauseOnFocusLoss

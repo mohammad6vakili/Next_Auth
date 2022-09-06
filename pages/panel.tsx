@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 
 // component imports ------------------------
 import { Container } from "../components/container";
+import { AuthBox } from "../components/auth_box";
 
 const Panel: NextPage = () => {
   // hooks ---------------------------------------------
@@ -27,9 +28,12 @@ const Panel: NextPage = () => {
 
   return (
     <Container>
-      <div>
-        <Typography variant="h6">Hello {user?.email}</Typography>
+      <AuthBox>
+        <Typography className="panel-user-email" variant="h6">
+          Hello {user?.email}
+        </Typography>
         <Button
+          id="panel-logout-button"
           className={styles.logout_button}
           variant="contained"
           onClick={handleLogout}
@@ -37,7 +41,7 @@ const Panel: NextPage = () => {
         >
           LOGOUT
         </Button>
-      </div>
+      </AuthBox>
     </Container>
   );
 };

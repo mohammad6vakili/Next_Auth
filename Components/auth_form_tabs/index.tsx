@@ -9,6 +9,7 @@ export default function AuthFormTabs() {
   return (
     <Box className={styles.card_tabs}>
       <Button
+        id="login-tab-btn"
         onClick={() => router.push("/auth/login")}
         className={
           router.pathname === "/auth/login" ? styles.auth_tab_selected : ""
@@ -17,6 +18,7 @@ export default function AuthFormTabs() {
         Login
       </Button>
       <Button
+        id="signup-tab-btn"
         onClick={() => router.push("/auth/signup")}
         className={
           router.pathname === "/auth/signup" ? styles.auth_tab_selected : ""
