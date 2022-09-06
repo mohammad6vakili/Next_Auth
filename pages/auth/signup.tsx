@@ -27,8 +27,8 @@ import styles from "../../styles/Auth.module.css";
 import { Colors } from "../../utils/Colors";
 
 // component imports------------------------
-import { Container } from "../../Components/Container/Container";
-import { AuthBox } from "../../Components/AuthBox/AuthBox";
+import { Container } from "../../Components/Container/Index";
+import { AuthBox } from "../../Components/AuthBox/Index";
 import AuthFormTabs from "../../Components/AuthFormTabs/Index";
 
 const Signup: NextPage = () => {

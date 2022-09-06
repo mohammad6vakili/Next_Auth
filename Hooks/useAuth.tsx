@@ -12,6 +12,7 @@ import { setUser, setUsers } from "../Features/Users";
 // Third Party Libraries imports ------------
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { toast } from "react-toastify";
 
 export default function useAuth() {
   // hooks ---------------------------------------------
@@ -41,27 +42,30 @@ export default function useAuth() {
     },
     validationSchema: loginValidationSchema,
     onSubmit: (values) => {
+      let errorMessage: string = "";
       let canLogin: Boolean = true;
       if (users.length === 0) {
         canLogin = false;
-        alert("User Not Found!");
+        errorMessage = "User Not Found!";
       }
       users.map((user: any) => {
         if (user.email !== values.email) {
-          alert("User Not Found!");
+          errorMessage = "User Not Found!";
           canLogin = false;
         } else if (
           user.email === values.email &&
           user.password !== values.password
         ) {
-          alert("Incorrect Password");
+          errorMessage = "Incorrect Password";
           canLogin = false;
         }
       });
       if (canLogin) {
-        alert("Login successfully...Wellcome");
         dispatch(setUser(values));
+        toast.success("Login Successfully");
         router.push("/panel");
+      } else {
+        toast.error(errorMessage);
       }
     },
   });
@@ -89,21 +93,24 @@ export default function useAuth() {
     },
     validationSchema: signupValidationSchema,
     onSubmit: (values) => {
+      let message: string = "";
       let alreadyExist: Boolean = false;
       let newUsers: any = [...users];
       if (!alreadyExist) {
         users.map((user: any) => {
           if (user.email === values.email) {
             alreadyExist = true;
-            alert("Already Exist!");
+            message = "Already Exist!";
           }
         });
       }
       if (!alreadyExist) {
         newUsers.push(values);
         dispatch(setUsers(newUsers));
-        alert("success");
+        toast.success("Your information has been successfully registered.");
         router.push("/auth/login");
+      } else {
+        toast.error(message);
       }
     },
   });
@@ -111,6 +118,7 @@ export default function useAuth() {
   // ---------------------------------------------------- Logout ------------------------------------------------------
   const handleLogout = () => {
     router.push("/auth/login");
+    toast.error("You have successfully logged out.");
     dispatch(setUser(null));
   };
 
@@ -119,11 +127,12 @@ export default function useAuth() {
     if (user) {
       router.push("/panel");
     } else {
-      router.push("/auth/login");
+      if (router.pathname !== "/auth/signup") router.push("/auth/login");
     }
   };
 
   // --------------------------------------------------- Effects -----------------------------------------------------
+
   useEffect(() => {
     checkUserIsLogged();
   }, []);

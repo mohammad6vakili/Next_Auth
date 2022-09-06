@@ -4,6 +4,7 @@
     "Transfer UserAuth Operations",
     "transfer operations",
     "useAuth Hook",
-    "persist storage"
+    "persist storage",
+    "toast"
   ]
 }

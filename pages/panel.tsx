@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 // component imports ------------------------
-import { Container } from "../Components/Container/Container";
+import { Container } from "../Components/Container/Index";
 
 const Dashboard: NextPage = () => {
   // hooks ---------------------------------------------

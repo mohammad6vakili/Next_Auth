@@ -1,5 +1,5 @@
 // React imports----------------------------
-import { useState, useContext } from "react";
+import { useState } from "react";
 
 // styles import----------------------------
 import styles from "../../styles/Auth.module.css";
@@ -9,10 +9,6 @@ import type { NextPage } from "next";
 
 // Hooks imports--------------------------
 import useAuth from "../../Hooks/useAuth";
-
-// Redux imports----------------------------
-import { useSelector } from "react-redux";
-import type { RootState } from "../../App/Store";
 
 // Mui imports------------------------------
 import Typography from "@mui/material/Typography";
@@ -33,17 +29,12 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Colors } from "../../utils/Colors";
 
 // component imports------------------------
-import { Container } from "../../Components/Container/Container";
-import { AuthBox } from "../../Components/AuthBox/AuthBox";
+import { Container } from "../../Components/Container/Index";
+import { AuthBox } from "../../Components/AuthBox/Index";
 import AuthFormTabs from "../../Components/AuthFormTabs/Index";
 
 const Login: NextPage = () => {
-  // global states -------------------------------------
-  const users = useSelector((state: RootState) => state.user.users);
-  const user = useSelector((state: RootState) => state.user.user);
-
   // hooks ---------------------------------------------
-  // const { loginFormController }: any = useContext(UserAuthContext);
   const { loginFormController }: any = useAuth();
 
   // states --------------------------------------------
@@ -51,7 +42,6 @@ const Login: NextPage = () => {
 
   return (
     <Container>
-      {/* ----- Toast Container ----- */}
       <AuthBox>
         {/* ----- Form Title ----- */}
         <Typography color={Colors.Primary} variant="h4">

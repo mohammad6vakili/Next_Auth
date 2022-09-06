@@ -1,5 +1,6 @@
 // Third party libraries import
-import styled from "styled-components";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // next import
 import type { AppProps } from "next/app";
@@ -40,13 +41,22 @@ const theme = createTheme({
 });
 
 // component imports
-import { Container } from "../Components/Container/Container";
+import { Container } from "../Components/Container/Index";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <PersistGate persistor={persistor}>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            newestOnTop={false}
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <Container>
             <Component {...pageProps} />
           </Container>
