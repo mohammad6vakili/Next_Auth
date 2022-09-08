@@ -2,22 +2,22 @@
 import styles from "../styles/Dashboard.module.css";
 
 // Hooks imports --------------------------
-import useAuth from "../hooks+/use_auth+";
+import useAuth from "../hooks/use_auth";
 
 // Next imports -----------------------------
 import { NextPage } from "next";
 
 // Redux imports ----------------------------
 import { useSelector } from "react-redux";
-import { RootState } from "../app+/store+";
+import { RootState } from "../app/store";
 
 // Mui imports ------------------------------
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 // component imports ------------------------
-import { Container } from "../components+/container+/index+";
-import { AuthBox } from "../components+/auth_box+/index+";
+import { Container } from "../components/container";
+import { AuthBox } from "../components/auth_box";
 
 const Panel: NextPage = () => {
   // hooks ---------------------------------------------

@@ -8,13 +8,13 @@ import Image from "next/image";
 import styled from "styled-components";
 
 import { useSelector } from "react-redux";
-import { RootState } from "../../app+/store+";
+import { RootState } from "../../app/store";
 
 // assets import
-import LoadingSvg from "../../assets+/loading+.svg";
+import LoadingSvg from "../../assets/loading.svg";
 
 // utils import
-import { Colors } from "../../utils+/colors+";
+import { Colors } from "../../utils/colors";
 
 // custom components
 const Container = styled.div`
