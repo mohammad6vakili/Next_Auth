@@ -6,9 +6,9 @@ import { useRouter } from "next/router";
 
 // Redux imports ----------------------------
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../app/store";
-import { setUser, setUsers } from "../features/users";
-import { setLoading } from "../features/app";
+import { RootState } from "../app+/store+";
+import { setUser, setUsers } from "../features+/users+";
+import { setLoading } from "../features+/app+";
 
 // Third Party Libraries imports ------------
 import { useFormik } from "formik";

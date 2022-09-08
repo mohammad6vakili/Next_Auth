@@ -9,10 +9,10 @@ import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // utils import
-import { Colors } from "../utils/colors";
+import { Colors } from "../utils+/colors+";
 
 // redux imports
-import { store } from "../app/store";
+import { store } from "../app+/store+";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
@@ -38,8 +38,8 @@ const theme = createTheme({
 });
 
 // component imports
-import { Container } from "../components/container";
-import Loading from "../components/loading";
+import { Container } from "../components+/container+/index+";
+import Loading from "../components+/loading+/index+";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

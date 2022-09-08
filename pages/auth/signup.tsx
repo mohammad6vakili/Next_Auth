@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { NextPage } from "next";
 
 // Hooks imports----------------------------
-import useAuth from "../../hooks/use_auth";
+import useAuth from "../../hooks+/use_auth+";
 
 // Mui imports------------------------------
 import Typography from "@mui/material/Typography";
@@ -24,12 +24,12 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import styles from "../../styles/Auth.module.css";
 
 // utils import-----------------------------
-import { Colors } from "../../utils/colors";
+import { Colors } from "../../utils+/colors+";
 
 // component imports------------------------
-import { Container } from "../../components/container";
-import { AuthBox } from "../../components/auth_box";
-import AuthFormTabs from "../../components/auth_form_tabs";
+import { Container } from "../../components+/container+/index+";
+import { AuthBox } from "../../components+/auth_box+/index+";
+import AuthFormTabs from "../../components+/auth_form_tabs+/index+";
 
 const Signup: NextPage = () => {
   // hooks ---------------------------------------
